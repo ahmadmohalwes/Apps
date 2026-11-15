@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f3a5f">
+<meta name="robots" content="noindex, nofollow">
+<title>مصاريفي</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f4f7; --card:#fff; --ink:#18213a; --muted:#6b7385; --line:#e3e6ee;
+  --main:#1f3a5f; --main2:#2c5282; --acc:#e07a3f; --acc-soft:#fde9dc;
+  --exp:#c2412d; --inc:#1f7a4d; --trf:#5b6b8c; --shadow:0 1px 2px rgba(20,30,60,.06),0 6px 20px rgba(20,30,60,.07);
+  --r:16px;
+  font-family:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0f131c;--card:#171d29;--ink:#e9ebf1;--muted:#98a0b3;--line:#262e3e;--acc-soft:#3b2a1e;--shadow:0 1px 2px rgba(0,0,0,.3)}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{min-height:100vh;font-size:16px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* lock */
+#lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(120% 80% at 50% 0%,#2f5d8f 0%,var(--main) 55%,#122540 100%)}
+.lock-card{width:100%;max-width:380px;background:var(--card);border-radius:24px;padding:28px 22px;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center}
+.logo{width:72px;height:72px;margin:0 auto 10px}
+.lock-card h1{margin:0 0 4px;font-size:24px}
+.lock-card p{margin:0 0 16px;color:var(--muted);font-size:14px}
+.field{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);margin-bottom:10px;outline:none;font-size:16px}
+.field:focus{border-color:var(--main2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 16px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--ink)}
+.btn.block{width:100%}
+.btn.primary{background:var(--main);color:#fff}
+.btn.acc{background:var(--acc);color:#fff}
+.btn.danger{background:#fbe7e3;color:var(--exp)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn.bio{background:var(--acc-soft);color:#8a4317;width:100%;padding:16px;margin-bottom:14px;font-size:17px}
+@media (prefers-color-scheme:dark){.btn.bio{color:#f5b98f}.btn.danger{background:#3a1f1a}}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;margin-top:8px;cursor:pointer;font-size:14px}
+.warn{background:#fff4e6;color:#8a4317;border-radius:10px;padding:10px 12px;font-size:13px;text-align:right}
+@media (prefers-color-scheme:dark){.warn{background:#3b2a1e;color:#f5b98f}}
+.err{color:var(--exp);font-size:14px;min-height:1.4em;margin:8px 0 0}
+
+/* app */
+#app{max-width:600px;margin:0 auto;padding-bottom:110px}
+header.top{background:linear-gradient(160deg,#2c5282,var(--main) 60%,#142a47);color:#fff;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 18px;border-radius:0 0 26px 26px}
+.bar{display:flex;align-items:center;gap:10px}
+.bar h1{font-size:20px;margin:0;flex:1}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:0;background:rgba(255,255,255,.13);color:#fff;display:grid;place-items:center;cursor:pointer}
+.icon-btn svg{width:22px;height:22px}
+.month{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px}
+.month b{font-size:17px;min-width:130px;text-align:center}
+.month button{width:34px;height:34px;border-radius:10px;border:0;background:rgba(255,255,255,.13);color:#fff;cursor:pointer;display:grid;place-items:center}
+.month button:disabled{opacity:.3}
+.totals{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.tot{background:rgba(255,255,255,.1);border-radius:14px;padding:10px;text-align:center}
+.tot small{display:block;font-size:12px;opacity:.85}
+.tot b{display:block;font-size:17px;margin-top:2px}
+.tabs{display:flex;gap:6px;margin:14px 14px 0;background:var(--card);padding:5px;border-radius:14px;box-shadow:var(--shadow)}
+.tabs button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font-weight:600;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--main);color:#fff}
+.banner{margin:12px 14px 0;background:var(--acc-soft);color:#8a4317;border-radius:14px;padding:11px 12px;display:flex;gap:10px;align-items:center;font-size:14px}
+@media (prefers-color-scheme:dark){.banner{color:#f5b98f}}
+.banner b{flex:1;font-weight:500}
+.banner button{border:0;background:var(--acc);color:#fff;border-radius:10px;padding:7px 12px;font-weight:600;white-space:nowrap;cursor:pointer}
+.toolbar{display:flex;gap:8px;margin:12px 14px 0}
+.search{flex:1;position:relative}
+.search input{width:100%;padding:11px 40px 11px 12px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);outline:none;font-size:16px}
+.search svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 14px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:6px 13px;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.sug{border-color:var(--acc);border-style:dashed}
+.day{margin:14px 14px 0}
+.dhead{display:flex;align-items:baseline;gap:8px;padding:0 4px 8px}
+.dhead h2{margin:0;font-size:15px;flex:1}
+.dhead span{color:var(--muted);font-size:13px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-top:1px solid var(--line);cursor:pointer}
+.row:first-child{border-top:0}
+.row:active{background:var(--bg)}
+.ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:var(--bg)}
+.rmain{flex:1;min-width:0}
+.rname{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rsub{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.acc-tag{background:var(--bg);border-radius:6px;padding:0 6px}
+.need{border:1.5px dashed var(--acc);color:var(--acc);border-radius:6px;padding:0 6px;font-weight:600}
+.amt{font-weight:700;font-size:16px}
+.amt.exp{color:var(--exp)} .amt.inc{color:var(--inc)} .amt.trf{color:var(--trf)}
+.empty{text-align:center;color:var(--muted);padding:40px 20px}
+#fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom));
+  height:58px;padding:0 26px;border-radius:999px;border:0;background:var(--acc);color:#fff;font-weight:700;font-size:17px;
+  box-shadow:0 10px 30px rgba(224,122,63,.45);display:flex;align-items:center;gap:8px;cursor:pointer;z-index:5}
+#fab svg{width:22px;height:22px}
+
+/* analysis */
+.sec{margin:16px 14px 0}
+.sec h3{font-size:15px;margin:0 0 8px;padding:0 4px}
+.pad{padding:14px}
+.bars .b{margin-bottom:12px}
+.bars .b:last-child{margin-bottom:0}
+.bl{display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:4px}
+.bl .n{display:flex;gap:6px;align-items:center;min-width:0}
+.bl .n span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bt{height:10px;border-radius:99px;background:var(--bg);overflow:hidden}
+.bt i{display:block;height:100%;border-radius:99px}
+.delta{font-size:12px;margin-inline-start:6px}
+.delta.up{color:var(--exp)} .delta.down{color:var(--inc)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:12px}
+.kpi small{display:block;color:var(--muted);font-size:12px}
+.kpi b{font-size:19px}
+.kpi p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.daily{display:flex;align-items:flex-end;gap:2px;height:90px;direction:ltr}
+.daily i{flex:1;background:var(--main2);border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.daily i.z{background:var(--line)}
+.dlabels{display:flex;justify-content:space-between;direction:ltr;font-size:11px;color:var(--muted);margin-top:4px}
+.mini-list .r{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.mini-list .r:first-child{border-top:0}
+.mini-list .r span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.muted{color:var(--muted);font-size:13px}
+
+/* sheet */
+.sheet-wrap{position:fixed;inset:0;background:rgba(10,15,30,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.sheet{background:var(--card);width:100%;max-width:600px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:8px 18px calc(22px + env(safe-area-inset-bottom));animation:up .2s ease-out}
+.grab{width:42px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 12px}
+.sheet h3{margin:0 0 14px;font-size:19px}
+@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+label.l{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px;font-weight:500}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:none;border-radius:9px;padding:10px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--card);box-shadow:var(--shadow)}
+.seg button.on[data-t="exp"]{color:var(--exp)} .seg button.on[data-t="inc"]{color:var(--inc)} .seg button.on[data-t="trf"]{color:var(--trf)}
+.big{font-size:34px;font-weight:700;text-align:center;direction:ltr;padding:10px;border:0;border-bottom:2px solid var(--line);border-radius:0;background:none;margin:6px 0 0}
+.big:focus{border-color:var(--acc)}
+.pick{display:flex;flex-wrap:wrap;gap:8px}
+.pick .chip{padding:8px 13px}
+.actions{display:flex;gap:8px;margin-top:18px}
+.actions .btn{flex:1}
+.set-item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-top:1px solid var(--line)}
+.set-item div{flex:1}
+.set-item small{display:block;color:var(--muted);font-size:13px}
+.set-sec{font-size:13px;color:var(--muted);margin:18px 0 4px;font-weight:600}
+.clsf{text-align:center;padding:6px 0 4px}
+.clsf .amt{font-size:28px}
+.clsf .d{font-size:18px;font-weight:600;margin-top:4px}
+.dlg-wrap{position:fixed;inset:0;background:rgba(10,15,30,.5);z-index:30;display:flex;align-items:center;justify-content:center;padding:20px}
+.dlg{background:var(--card);border-radius:20px;padding:20px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.dlg h4{margin:0 0 8px;font-size:18px}
+.dlg p{margin:0 0 14px;color:var(--muted);font-size:14px;white-space:pre-line}
+.dlg .actions{flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
+  background:#18213a;color:#fff;padding:11px 16px;border-radius:12px;z-index:40;transition:.2s;display:flex;gap:12px;align-items:center;max-width:90vw;font-size:14px;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
+#toast button{background:none;border:0;color:var(--acc);font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- ============ LOCK ============ -->
+<section id="lock">
+  <div class="lock-card">
+    <svg class="logo" viewBox="0 0 72 72" aria-hidden="true">
+      <rect width="72" height="72" rx="20" fill="#1f3a5f"/>
+      <rect x="13" y="22" width="46" height="30" rx="6" fill="#e07a3f"/>
+      <rect x="13" y="29" width="46" height="6" fill="#b85a26"/>
+      <rect x="40" y="40" width="13" height="6" rx="2" fill="#fde9dc"/>
+    </svg>
+    <h1>مصاريفي</h1>
+    <p id="lockSub">جاري التحميل…</p>
+    <form id="setupForm" hidden autocomplete="off">
+      <input id="pw1" class="field" type="password" placeholder="اختار كلمة سر" autocomplete="new-password">
+      <input id="pw2" class="field" type="password" placeholder="اكتبها مرة تانية" autocomplete="new-password">
+      <p class="warn">إذا نسيت كلمة السر، ما في أي طريقة ترجّع المعلومات ولا النسخ الاحتياطية.</p>
+      <button class="btn primary block" type="submit">ابدأ</button>
+    </form>
+    <form id="unlockForm" hidden autocomplete="off">
+      <button id="bioBtn" class="btn bio" type="button" hidden>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 11v3a8 8 0 0 1-1 4M8.5 8.5A4.5 4.5 0 0 1 16.5 11v2c0 2-.4 3.8-1.2 5.4M5 10a7 7 0 0 1 12.8-3.9M4.5 14.5c.3-1 .5-2.1.5-3.2M19 11v1.5c0 1.6-.2 3.1-.6 4.5M8 12c0 3-.8 5.3-2 7"/></svg>
+        افتح بالبصمة
+      </button>
+      <input id="pw" class="field" type="password" placeholder="كلمة السر" autocomplete="current-password">
+      <button class="btn primary block" type="submit">افتح</button>
+      <button id="forgotBtn" class="link" type="button">نسيت كلمة السر؟</button>
+    </form>
+    <p id="lockErr" class="err"></p>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="app" hidden>
+  <header class="top">
+    <div class="bar">
+      <h1>مصاريفي</h1>
+      <button class="icon-btn" id="lockBtn" aria-label="قفل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
+      <button class="icon-btn" id="setBtn" aria-label="إعدادات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
+    <div class="month"><button id="mPrev" aria-label="الشهر اللي قبل"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button><b id="mLabel"></b><button id="mNext" aria-label="الشهر الجاي"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg></button></div>
+    <div class="totals">
+      <div class="tot"><small>دخل</small><b class="num" id="tInc">0</b></div>
+      <div class="tot"><small>صرفت</small><b class="num" id="tExp">0</b></div>
+      <div class="tot"><small>الفرق</small><b class="num" id="tNet">0</b></div>
+    </div>
+  </header>
+  <div id="banner"></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="list">السجل</button>
+    <button data-tab="stats">التحليل</button>
+  </nav>
+  <div id="listTools">
+    <div class="toolbar"><div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="دوّر…" autocomplete="off">
+    </div></div>
+    <div class="chips" id="chips"></div>
+  </div>
+  <main id="main"></main>
+  <button id="fab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>سجّل</button>
+</section>
+
+<div id="sheet" class="sheet-wrap" hidden><div class="sheet" role="dialog"><div class="grab"></div><div id="sheetBody"></div></div></div>
+<div id="dlg" class="dlg-wrap" hidden><div class="dlg" id="dlgBody"></div></div>
+<div id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json,text/plain" hidden>
+<datalist id="dlDesc"></datalist>
+
+<script>
+"use strict";
+/* ================= helpers ================= */
+const $=s=>document.querySelector(s);
+const enc=new TextEncoder(), dec=new TextDecoder();
+const LS='masarif.v1', APP='مصاريفي';
+const MONTHS=['كانون الثاني','شباط','آذار','نيسان','أيار','حزيران','تموز','آب','أيلول','تشرين الأول','تشرين الثاني','كانون الأول'];
+const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const PALETTE=['#e07a3f','#2c7be5','#1f9d6b','#9b51e0','#e0457b','#d4a017','#14a3b8','#6c5ce7','#c0392b','#7f8c8d','#16a085','#8e6e53'];
+const DEFAULT_ACCOUNTS=[{id:'cash',name:'كاش',icon:'💵'},{id:'bank',name:'البنك',icon:'🏦'},{id:'visa1',name:'فيزا 1',icon:'💳'},{id:'visa2',name:'فيزا 2',icon:'💳'}];
+const DEFAULT_CATS=[['food','أكل','🍔'],['transport','مواصلات','🚌'],['study','دراسة','📚'],['subs','اشتراكات','🔁'],['outings','طلعات','🎉'],['phone','تلفون','📱'],['clothes','ملابس','👕'],['gifts','هدايا','🎁']].map(([id,name,icon],i)=>({id,name,icon,color:PALETTE[i]}));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toWestern=s=>String(s??'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/٫/g,'.');
+const fmt=n=>{ const v=Math.round((+n||0)*100)/100; return v.toLocaleString('en-US',{maximumFractionDigits:2}); };
+const money=n=>`<span class="num">${fmt(n)} ₪</span>`;
+const moneyTxt=n=>`${fmt(n)} ₪`;
+const norm=s=>toWestern(s).replace(/[ً-ْٰـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+  .replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/[()"'«»\-_.,،]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const today=()=>ymd(new Date());
+const thisMonth=()=>today().slice(0,7);
+const shiftMonth=(m,k)=>{ const [y,mo]=m.split('-').map(Number); const d=new Date(y,mo-1+k,1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; };
+const monthLabel=m=>{ const [y,mo]=m.split('-').map(Number); return `${MONTHS[mo-1]} ${y}`; };
+const daysIn=m=>{ const [y,mo]=m.split('-').map(Number); return new Date(y,mo,0).getDate(); };
+const fmtDate=s=>{ if(!s) return ''; const [y,m,d]=s.split('-'); return `${+d}/${+m}/${y}`; };
+function dayLabel(s){ if(s===today()) return 'اليوم'; const y=new Date(); y.setDate(y.getDate()-1); if(s===ymd(y)) return 'مبارح'; const [a,b,c]=s.split('-').map(Number); return `${DAYS[new Date(a,b-1,c).getDay()]} ${c}/${b}`; }
+function b64(buf){ const a=new Uint8Array(buf); let s=''; for(let i=0;i<a.length;i+=0x8000) s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000)); return btoa(s); }
+function unb64(s){ const b=atob(s); const a=new Uint8Array(b.length); for(let i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
+const rand=n=>crypto.getRandomValues(new Uint8Array(n));
+const parseAmt=v=>{ const x=parseFloat(toWestern(v).replace(/[^\d.]/g,'')); return isFinite(x)?Math.round(x*100)/100:0; };
+
+/* ================= IndexedDB ================= */
+let _db;
+function idb(){ return _db||(_db=new Promise((res,rej)=>{ const r=indexedDB.open('masarif',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); })); }
+async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const r=db.transaction('kv').objectStore('kv').get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function idbSet(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const t=db.transaction('kv','readwrite'); t.objectStore('kv').put(v,k); t.oncomplete=()=>res(); t.onerror=()=>rej(t.error); }); }
+async function idbDel(k){ const db=await idb(); return new Promise((res,rej)=>{ const t=db.transaction('kv','readwrite'); t.objectStore('kv').delete(k); t.oncomplete=()=>res(); t.onerror=()=>rej(t.error); }); }
+async function loadRecord(){ let a=null,b=null; try{a=JSON.parse(localStorage.getItem(LS));}catch(e){} try{b=await idbGet('record');}catch(e){} if(a&&b) return (a.savedAt||0)>=(b.savedAt||0)?a:b; return a||b||null; }
+async function writeRecord(r){ r.savedAt=Date.now(); let ok=0; try{localStorage.setItem(LS,JSON.stringify(r));ok++;}catch(e){} try{await idbSet('record',JSON.parse(JSON.stringify(r)));ok++;}catch(e){} if(!ok){ toast('⚠️ ما قدرت أحفظ! اعمل نسخة احتياطية هلق'); throw new Error('save failed'); } }
+
+/* ================= crypto ================= */
+async function pwKey(pw,salt,iter){ const base=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']); return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']); }
+async function aesEnc(key,bytes){ const iv=rand(12); const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,bytes); return {iv:b64(iv),ct:b64(ct)}; }
+async function aesDec(key,o){ return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(o.iv)},key,unb64(o.ct))); }
+const dataKey=raw=>crypto.subtle.importKey('raw',raw,'AES-GCM',false,['encrypt','decrypt']);
+async function prfKey(out){ const base=await crypto.subtle.importKey('raw',out,'HKDF',false,['deriveKey']); return crypto.subtle.deriveKey({name:'HKDF',hash:'SHA-256',salt:new Uint8Array(32),info:enc.encode('masarif-bio-v1')},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']); }
+
+/* ================= state ================= */
+let rec=null;
+const S={raw:null,key:null,d:null};   // d = {entries,accounts,cats,rules}
+const UI={tab:'list',month:thisMonth(),filter:'all',q:''};
+let hiddenAt=0;
+const blankData=()=>({entries:[],accounts:JSON.parse(JSON.stringify(DEFAULT_ACCOUNTS)),cats:JSON.parse(JSON.stringify(DEFAULT_CATS)),rules:{}});
+
+/* ================= biometrics ================= */
+async function bioAvailable(){ try{ if(!window.PublicKeyCredential||!window.isSecureContext||location.protocol==='file:') return false; return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(); }catch(e){ return false; } }
+function bioGet(credId,prfSalt){ const pk={challenge:rand(32),allowCredentials:[{type:'public-key',id:unb64(credId)}],userVerification:'required',timeout:60000}; if(prfSalt) pk.extensions={prf:{eval:{first:prfSalt}}}; return navigator.credentials.get({publicKey:pk}); }
+async function bioEnable(){
+  const prfSalt=rand(32);
+  const cred=await navigator.credentials.create({publicKey:{rp:{name:APP},user:{id:rand(16),name:'masarif',displayName:APP},challenge:rand(32),
+    pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+    authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},timeout:60000,extensions:{prf:{eval:{first:prfSalt}}}}});
+  const credId=b64(cred.rawId); const ext=(cred.getClientExtensionResults&&cred.getClientExtensionResults())||{};
+  let out=ext.prf&&ext.prf.results&&ext.prf.results.first;
+  if(!out&&ext.prf&&ext.prf.enabled){ try{ const a=await bioGet(credId,prfSalt); const e2=a.getClientExtensionResults(); out=e2.prf&&e2.prf.results&&e2.prf.results.first; }catch(e){} }
+  if(out){ rec.bio={mode:'prf',credId,prfSalt:b64(prfSalt),wrap:await aesEnc(await prfKey(out),S.raw)}; await idbDel('gateKey').catch(()=>{}); }
+  else{ const gk=await crypto.subtle.importKey('raw',S.raw,'AES-GCM',true,['encrypt','decrypt']); await idbSet('gateKey',gk); rec.bio={mode:'gate',credId}; }
+  await writeRecord(rec);
+}
+async function bioDisable(){ rec.bio=null; await idbDel('gateKey').catch(()=>{}); await writeRecord(rec); }
+async function bioUnlock(){
+  const b=rec.bio; const a=await bioGet(b.credId,b.mode==='prf'?unb64(b.prfSalt):null); let raw;
+  if(b.mode==='prf'){ const e=a.getClientExtensionResults(); const out=e.prf&&e.prf.results&&e.prf.results.first; if(!out) throw new Error('noprf'); raw=await aesDec(await prfKey(out),b.wrap); }
+  else{ const gk=await idbGet('gateKey'); if(!gk) throw new Error('nokey'); raw=new Uint8Array(await crypto.subtle.exportKey('raw',gk)); }
+  await openSession(raw);
+}
+
+/* ================= session ================= */
+async function setupNew(pw){
+  const raw=rand(32), salt=rand(16), iter=250000;
+  rec={v:1,kdf:{salt:b64(salt),iter},wrapPw:await aesEnc(await pwKey(pw,salt,iter),raw),bio:null,data:null,lastBackup:null,changes:0,autoLock:60};
+  S.raw=raw; S.key=await dataKey(raw); S.d=blankData(); await persist(false);
+  try{ navigator.storage&&navigator.storage.persist&&navigator.storage.persist(); }catch(e){}
+}
+async function unlockWithPw(pw){ const k=await pwKey(pw,unb64(rec.kdf.salt),rec.kdf.iter); let raw; try{ raw=await aesDec(k,rec.wrapPw); }catch(e){ throw new Error('badpw'); } await openSession(raw); }
+async function openSession(raw){
+  S.raw=raw; S.key=await dataKey(raw);
+  S.d=rec.data?JSON.parse(dec.decode(await aesDec(S.key,rec.data))):blankData();
+  const b=blankData(); for(const k of Object.keys(b)) if(!S.d[k]) S.d[k]=b[k];
+  showApp();
+}
+async function persist(count=true){ rec.data=await aesEnc(S.key,enc.encode(JSON.stringify(S.d))); if(count) rec.changes=(rec.changes||0)+1; await writeRecord(rec); }
+function lock(){ S.raw=null; S.key=null; S.d=null; closeSheet(); closeDlg(); $('#main').innerHTML=''; $('#app').hidden=true; showLock(); }
+
+/* ================= lock screen ================= */
+async function showLock(){
+  $('#lock').hidden=false; $('#lockErr').textContent='';
+  if(!rec){ $('#lockSub').textContent='أول مرة؟ اختار كلمة سر. كل المعلومات بتنحفظ مشفّرة على هاد التلفون بس.'; $('#setupForm').hidden=false; $('#unlockForm').hidden=true; setTimeout(()=>$('#pw1').focus(),100); }
+  else{ $('#lockSub').textContent='التطبيق مقفول'; $('#setupForm').hidden=true; $('#unlockForm').hidden=false; $('#pw').value='';
+    const can=!!rec.bio&&await bioAvailable(); $('#bioBtn').hidden=!can; if(can) setTimeout(tryBio,250); }
+}
+async function tryBio(){ $('#lockErr').textContent=''; try{ await bioUnlock(); }catch(e){ if(e&&e.name!=='NotAllowedError') $('#lockErr').textContent='البصمة ما زبطت، افتح بكلمة السر.'; } }
+$('#bioBtn').onclick=tryBio;
+$('#setupForm').onsubmit=async e=>{ e.preventDefault(); const a=$('#pw1').value,b=$('#pw2').value;
+  if(a.length<4) return $('#lockErr').textContent='كلمة السر لازم تكون 4 أحرف أو أكثر.'; if(a!==b) return $('#lockErr').textContent='الكلمتين مش زي بعض.';
+  $('#lockErr').textContent=''; await setupNew(a); $('#pw1').value=$('#pw2').value=''; showApp(); if(await bioAvailable()) askBio(); };
+$('#unlockForm').onsubmit=async e=>{ e.preventDefault(); const pw=$('#pw').value; if(!pw) return; $('#lockErr').textContent='…';
+  try{ await unlockWithPw(pw); $('#pw').value=''; }catch(err){ $('#lockErr').textContent='كلمة السر غلط.'; } };
+$('#forgotBtn').onclick=()=>dialog({title:'نسيت كلمة السر؟',text:'المعلومات مشفّرة بكلمة السر، فما في طريقة ترجّعها بدونها.\nإذا عندك نسخة احتياطية بتتذكر كلمة سرها، بتقدر تمسح وتبدأ من جديد وبعدين تستوردها.',
+  buttons:[{label:'رجوع'},{label:'امسح وابدأ من جديد',cls:'danger',fn:()=>dialog({title:'متأكد؟',text:'رح ينمسح كل إشي على هاد التلفون. اكتب "امسح" للتأكيد.',input:{placeholder:'امسح'},
+    buttons:[{label:'رجوع'},{label:'امسح',cls:'danger',fn:async v=>{ if((v||'').trim()!=='امسح') return toast('ما انمسح إشي'); try{localStorage.removeItem(LS);}catch(e){} await idbDel('record').catch(()=>{}); await idbDel('gateKey').catch(()=>{}); rec=null; showLock(); }}]})}]});
+function askBio(){ dialog({title:'تفتح بالبصمة؟',text:'بتقدر تفتح التطبيق ببصمة إصبعك. كلمة السر بتضل شغالة كاحتياط.',buttons:[{label:'مش هلق'},{label:'فعّل البصمة',cls:'primary',fn:async()=>{ try{ await bioEnable(); toast('تفعّلت البصمة ✓'); }catch(e){ toast('ما تفعّلت البصمة'); } }}]}); }
+
+/* ================= data helpers ================= */
+const cat=id=>S.d.cats.find(c=>c.id===id);
+const acc=id=>S.d.accounts.find(a=>a.id===id)||{id,name:id,icon:'❔'};
+const inMonth=(m=UI.month)=>S.d.entries.filter(e=>(e.date||'').startsWith(m));
+const sum=l=>l.reduce((s,e)=>s+(+e.amount||0),0);
+const exps=l=>l.filter(e=>e.type==='exp'), incs=l=>l.filter(e=>e.type==='inc');
+function suggestCat(desc){
+  const k=norm(desc); if(!k) return '';
+  if(S.d.rules[k]&&cat(S.d.rules[k])) return S.d.rules[k];
+  let best='',len=0;
+  for(const [rk,c] of Object.entries(S.d.rules)){ if(rk.length>=3&&cat(c)&&(k.includes(rk)||rk.includes(k)&&k.length>=3)&&rk.length>len){ best=c; len=rk.length; } }
+  return best;
+}
+function learn(desc,c){ const k=norm(desc); if(k&&c) S.d.rules[k]=c; }
+const label=e=>e.desc||(e.type==='exp'?(cat(e.cat)?.name||'مصروف'):e.type==='inc'?'دخل':'تحويل');
+
+/* ================= app render ================= */
+function showApp(){ $('#lock').hidden=true; $('#app').hidden=false; render(); }
+function render(){
+  const ms=inMonth(), inc=sum(incs(ms)), ex=sum(exps(ms)), net=inc-ex;
+  $('#mLabel').textContent=monthLabel(UI.month);
+  $('#mNext').disabled=UI.month>=thisMonth();
+  $('#tInc').textContent=fmt(inc); $('#tExp').textContent=fmt(ex); $('#tNet').textContent=(net>0?'+':'')+fmt(net);
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===UI.tab));
+  $('#listTools').hidden=UI.tab!=='list';
+  $('#dlDesc').innerHTML=[...new Set(S.d.entries.map(e=>e.desc).filter(Boolean))].slice(-300).map(n=>`<option value="${esc(n)}">`).join('');
+  renderBanner(ms);
+  UI.tab==='list'?renderList(ms):renderStats(ms);
+}
+function renderBanner(ms){
+  const unc=exps(ms).filter(e=>!cat(e.cat)).length;
+  const c=rec.changes||0, last=rec.lastBackup, days=last?(Date.now()-last)/864e5:Infinity;
+  const needBk=S.d.entries.length>0&&c>0&&(days>=7||c>=15||!last);
+  let h='';
+  if(unc) h+=`<div class="banner"><b>${unc} مصروف بدون تصنيف هالشهر</b><button id="bnCls">صنّفهم</button></div>`;
+  if(needBk) h+=`<div class="banner"><b>${last?`عندك ${c} تغيير من آخر نسخة احتياطية`:'لسا ما عملت نسخة احتياطية'}</b><button id="bnBk">اعمل نسخة</button></div>`;
+  $('#banner').innerHTML=h;
+  if(unc) $('#bnCls').onclick=()=>classifyFlow();
+  if(needBk) $('#bnBk').onclick=backupSheet;
+}
+function rowHtml(e){
+  const c=cat(e.cat), a=acc(e.account);
+  const icon=e.type==='inc'?'💰':e.type==='trf'?'⇄':(c?c.icon:'❔');
+  const bg=e.type==='exp'&&c?c.color+'22':'';
+  const sub=[`<span class="acc-tag">${e.type==='trf'?`${esc(a.name)} ← ${esc(acc(e.to).name)}`:`${a.icon} ${esc(a.name)}`}</span>`,
+    e.type==='exp'?(c?`<span>${esc(c.name)}</span>`:`<span class="need">صنّف</span>`):'',
+    e.note?`<span>${esc(e.note)}</span>`:''].join('');
+  const sign=e.type==='exp'?'−':e.type==='inc'?'+':'';
+  return `<div class="row" data-id="${e.id}"><div class="ic" style="${bg?`background:${bg}`:''}">${icon}</div><div class="rmain"><div class="rname">${esc(label(e))}</div><div class="rsub">${sub}</div></div><div class="amt ${e.type}"><span class="num">${sign}${fmt(e.amount)}</span></div></div>`;
+}
+function renderList(ms){
+  const f=UI.filter;
+  const opts=[['all','الكل'],['exp','مصاريف'],['inc','دخل'],['trf','تحويلات'],['unc','بدون تصنيف'],...S.d.accounts.map(a=>['acc:'+a.id,a.icon+' '+a.name])];
+  $('#chips').innerHTML=opts.map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-f="${k}">${esc(l)}</button>`).join('');
+  let list=ms.filter(e=> f==='all'||(f==='unc'?(e.type==='exp'&&!cat(e.cat)):f.startsWith('acc:')?(e.account===f.slice(4)||e.to===f.slice(4)):e.type===f));
+  if(UI.q){ const q=norm(UI.q); list=list.filter(e=>norm(e.desc).includes(q)||norm(e.note).includes(q)||norm(cat(e.cat)?.name).includes(q)||String(e.amount).includes(q)); }
+  if(!ms.length){ $('#main').innerHTML=`<div class="empty">ما في إشي مسجّل بـ ${monthLabel(UI.month)}.<br>كبسة "سجّل" لتسجّل مصروف أو دخل.</div>`; return; }
+  if(!list.length){ $('#main').innerHTML=`<div class="empty">ما في نتائج</div>`; return; }
+  const days=[...new Set(list.map(e=>e.date))].sort().reverse();
+  $('#main').innerHTML=days.map(d=>{ const items=list.filter(e=>e.date===d).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')); const de=sum(exps(items));
+    return `<section class="day"><div class="dhead"><h2>${esc(dayLabel(d))}</h2>${de?`<span>صرفت ${money(de)}</span>`:''}</div><div class="card">${items.map(rowHtml).join('')}</div></section>`; }).join('');
+}
+function bar(name,icon,val,max,color,extra=''){ return `<div class="b"><div class="bl"><span class="n">${icon?`<b>${icon}</b>`:''}<span>${esc(name)}</span></span><span>${money(val)}${extra}</span></div><div class="bt"><i style="width:${max?Math.max(2,val/max*100):0}%;background:${color}"></i></div></div>`; }
+function renderStats(ms){
+  const ex=exps(ms), inc=incs(ms), tE=sum(ex), tI=sum(inc);
+  const prev=inMonth(shiftMonth(UI.month,-1)), pE=sum(exps(prev));
+  if(!ms.length){ $('#main').innerHTML=`<div class="empty">ما في معلومات لـ ${monthLabel(UI.month)} لسا.</div>`; return; }
+  const isCur=UI.month===thisMonth(), nd=daysIn(UI.month), passed=isCur?new Date().getDate():nd;
+  let h='<div class="sec"><div class="kpis">';
+  h+=`<div class="kpi"><small>صرفت</small><b>${money(tE)}</b><p>${pE?(tE>=pE?`أكثر من الشهر الماضي بـ ${Math.round((tE-pE)/pE*100)}%`:`أقل من الشهر الماضي بـ ${Math.round((pE-tE)/pE*100)}%`):'ما في شهر قبل للمقارنة'}</p></div>`;
+  h+=`<div class="kpi"><small>دخل</small><b>${money(tI)}</b><p>${tI?(tI>=tE?`ضايل معك ${moneyTxt(tI-tE)}`:`صرفت أكثر من الدخل بـ ${moneyTxt(tE-tI)}`):'لسا ما سجّلت دخل'}</p></div>`;
+  h+=`<div class="kpi"><small>معدل اليوم</small><b>${money(tE/Math.max(1,passed))}</b><p>${isCur?`إذا كمّلت هيك: حوالي ${moneyTxt(tE/Math.max(1,passed)*nd)} للشهر`:`على ${nd} يوم`}</p></div>`;
+  h+=`<div class="kpi"><small>عدد المصاريف</small><b class="num">${ex.length}</b><p>${ex.length?`معدل المصروف ${moneyTxt(tE/ex.length)}`:''}</p></div>`;
+  h+='</div></div>';
+  // categories
+  const byCat={}; ex.forEach(e=>{ const k=cat(e.cat)?e.cat:'_'; byCat[k]=(byCat[k]||0)+(+e.amount||0); });
+  const pByCat={}; exps(prev).forEach(e=>{ const k=cat(e.cat)?e.cat:'_'; pByCat[k]=(pByCat[k]||0)+(+e.amount||0); });
+  const cats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]); const mx=cats.length?cats[0][1]:0;
+  if(cats.length){
+    h+=`<div class="sec"><h3>وين راحت المصاري</h3><div class="card pad bars">`+cats.map(([k,v])=>{ const c=cat(k); const pv=pByCat[k]||0; const pct=tE?Math.round(v/tE*100):0;
+      const d=pv?`<span class="delta ${v>pv?'up':'down'}">${v>pv?'▲':'▼'}${Math.abs(Math.round((v-pv)/pv*100))}%</span>`:'';
+      return bar(`${c?c.name:'بدون تصنيف'} · ${pct}%`,c?c.icon:'❔',v,mx,c?c.color:'#a0a7b4',d); }).join('')+`</div>${pE?'<p class="muted" style="padding:6px 4px 0">الأسهم مقارنة بالشهر اللي قبل</p>':''}</div>`;
+  }
+  // accounts
+  const byAcc={}; ex.forEach(e=>byAcc[e.account]=(byAcc[e.account]||0)+(+e.amount||0));
+  const accs=Object.entries(byAcc).sort((a,b)=>b[1]-a[1]);
+  if(accs.length) h+=`<div class="sec"><h3>كيف دفعت</h3><div class="card pad bars">`+accs.map(([k,v])=>{ const a=acc(k); return bar(a.name,a.icon,v,accs[0][1],'#2c5282'); }).join('')+`</div></div>`;
+  // grouped similar descriptions
+  const g={}; ex.forEach(e=>{ const k=norm(e.desc)||('_'+(e.cat||'')); if(!g[k]) g[k]={name:e.desc||(cat(e.cat)?.name||'بدون وصف'),n:0,v:0}; g[k].n++; g[k].v+=+e.amount||0; });
+  const top=Object.values(g).sort((a,b)=>b.v-a.v).slice(0,8);
+  if(top.length) h+=`<div class="sec"><h3>أكثر إشي صرفت عليه</h3><div class="card pad mini-list">`+top.map(t=>`<div class="r"><span>${esc(t.name)}${t.n>1?` <span class="muted">× ${t.n}</span>`:''}</span><span>${money(t.v)}</span></div>`).join('')+`</div></div>`;
+  // biggest
+  const big=[...ex].sort((a,b)=>b.amount-a.amount).slice(0,5);
+  if(big.length) h+=`<div class="sec"><h3>أكبر 5 مصاريف</h3><div class="card">`+big.map(rowHtml).join('')+`</div></div>`;
+  // daily
+  const per=Array.from({length:nd},(_,i)=>sum(ex.filter(e=>+e.date.slice(8)===i+1))); const pm=Math.max(...per,1);
+  h+=`<div class="sec"><h3>المصروف باليوم</h3><div class="card pad"><div class="daily">${per.map((v,i)=>`<i class="${v?'':'z'}" style="height:${v?Math.max(4,v/pm*100):2}%" title="${i+1}: ${fmt(v)}"></i>`).join('')}</div><div class="dlabels"><span>1</span><span>${Math.ceil(nd/2)}</span><span>${nd}</span></div>`;
+  const wd=Array(7).fill(0); ex.forEach(e=>{ const [y,m,d]=e.date.split('-').map(Number); wd[new Date(y,m-1,d).getDay()]+=+e.amount||0; });
+  const wmax=wd.indexOf(Math.max(...wd)); if(tE) h+=`<p class="muted" style="margin:10px 0 0">أكثر يوم بتصرف فيه: <b>${DAYS[wmax]}</b> (${moneyTxt(wd[wmax])} هالشهر)</p>`;
+  h+=`</div></div>`;
+  // income by account
+  if(inc.length){ const ia={}; inc.forEach(e=>ia[e.account]=(ia[e.account]||0)+(+e.amount||0)); const ie=Object.entries(ia);
+    h+=`<div class="sec"><h3>الدخل</h3><div class="card pad bars">`+ie.map(([k,v])=>{ const a=acc(k); return bar(a.name,a.icon,v,Math.max(...ie.map(x=>x[1])),'#1f7a4d'); }).join('')+`</div></div>`; }
+  h+=`<div class="sec"><button class="btn ghost block" id="toClaude">صدّر الشهر لـ Claude لتحليل أعمق</button></div>`;
+  $('#main').innerHTML=h;
+  $('#toClaude').onclick=exportForClaude;
+  $('#main').querySelectorAll('.row').forEach(r=>r.onclick=()=>entrySheet(S.d.entries.find(x=>x.id===r.dataset.id)));
+}
+
+/* ================= events ================= */
+$('#tabs').onclick=e=>{ const b=e.target.closest('button'); if(!b) return; UI.tab=b.dataset.tab; render(); window.scrollTo(0,0); };
+$('#chips').onclick=e=>{ const b=e.target.closest('.chip'); if(!b) return; UI.filter=b.dataset.f; render(); };
+$('#q').oninput=e=>{ UI.q=e.target.value; render(); };
+$('#mPrev').onclick=()=>{ UI.month=shiftMonth(UI.month,-1); render(); };
+$('#mNext').onclick=()=>{ if(UI.month<thisMonth()){ UI.month=shiftMonth(UI.month,1); render(); } };
+$('#main').addEventListener('click',e=>{ const r=e.target.closest('.row'); if(r&&UI.tab==='list') entrySheet(S.d.entries.find(x=>x.id===r.dataset.id)); });
+$('#fab').onclick=()=>entrySheet(null);
+$('#lockBtn').onclick=lock;
+$('#setBtn').onclick=settingsSheet;
+document.addEventListener('visibilitychange',()=>{ if(!S.key) return; if(document.hidden){ hiddenAt=Date.now(); if((rec.autoLock??60)===0) lock(); } else if(hiddenAt&&Date.now()-hiddenAt>(rec.autoLock??60)*1000) lock(); });
+
+/* ================= sheet & dialog ================= */
+function openSheet(html){ $('#sheetBody').innerHTML=html; $('#sheet').hidden=false; }
+function closeSheet(){ $('#sheet').hidden=true; $('#sheetBody').innerHTML=''; }
+$('#sheet').onclick=e=>{ if(e.target.id==='sheet') closeSheet(); };
+function dialog({title,text,input,buttons}){
+  $('#dlgBody').innerHTML=`<h4>${esc(title)}</h4>${text?`<p>${esc(text)}</p>`:''}${input?`<input class="field" id="dlgIn" type="${input.type||'text'}" value="${esc(input.value||'')}" placeholder="${esc(input.placeholder||'')}" autocomplete="off">`:''}<div class="actions">${buttons.map((b,i)=>`<button class="btn ${b.cls||'ghost'}" data-i="${i}">${esc(b.label)}</button>`).join('')}</div>`;
+  $('#dlg').hidden=false; const inp=$('#dlgIn'); if(inp) setTimeout(()=>inp.focus(),50);
+  $('#dlgBody').querySelectorAll('[data-i]').forEach(btn=>btn.onclick=async()=>{ const b=buttons[+btn.dataset.i]; const v=inp?inp.value:undefined; closeDlg(); if(b.fn) await b.fn(v); });
+}
+function closeDlg(){ $('#dlg').hidden=true; $('#dlgBody').innerHTML=''; }
+let toastT;
+function toast(msg,action){ const t=$('#toast'); t.innerHTML=`<span>${esc(msg)}</span>${action?`<button>${esc(action.label)}</button>`:''}`;
+  if(action) t.querySelector('button').onclick=()=>{ t.classList.remove('show'); action.fn(); };
+  t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),action?6000:2600); }
+
+/* ================= entry form ================= */
+function catChips(sel,sug){ return S.d.cats.map(c=>`<button type="button" class="chip ${c.id===sel?'on':''} ${c.id===sug&&c.id!==sel?'sug':''}" data-c="${c.id}">${c.icon} ${esc(c.name)}</button>`).join('')+`<button type="button" class="chip" data-c="__new">+ تصنيف جديد</button>`; }
+function accChips(sel,attr){ return S.d.accounts.map(a=>`<button type="button" class="chip ${a.id===sel?'on':''}" data-${attr}="${a.id}">${a.icon} ${esc(a.name)}</button>`).join(''); }
+function newCategory(cb){
+  dialog({title:'تصنيف جديد',input:{placeholder:'مثلاً: بنزين'},buttons:[{label:'إلغاء'},{label:'زيد',cls:'primary',fn:async v=>{
+    v=(v||'').trim(); if(!v) return; if(S.d.cats.some(c=>norm(c.name)===norm(v))) return toast('موجود من قبل');
+    const c={id:uid(),name:v,icon:'🏷️',color:PALETTE[S.d.cats.length%PALETTE.length]}; S.d.cats.push(c); await persist(); cb&&cb(c.id); }}]});
+}
+function entrySheet(e,preset={}){
+  const isNew=!e;
+  const d=e?{...e}:{type:preset.type||'exp',amount:'',account:(preset.type==='inc'?rec.lastIncAcc:rec.lastExpAcc)||(preset.type==='inc'?'bank':'cash'),to:'cash',desc:'',cat:'',date:today(),note:''};
+  if(isNew&&!S.d.accounts.some(a=>a.id===d.account)) d.account=S.d.accounts[0].id;
+  let st={type:d.type,account:d.account,to:d.to||'cash',cat:d.cat,catTouched:!isNew};
+  const draw=()=>{
+    const sug=st.type==='exp'&&!st.catTouched?suggestCat($('#fDesc')?.value||d.desc):'';
+    if(!st.catTouched) st.cat=sug;
+    $('#fTypeArea').innerHTML= st.type==='trf'
+      ? `<label class="l">من</label><div class="pick" id="fAcc">${accChips(st.account,'a')}</div><label class="l">لـ</label><div class="pick" id="fTo">${accChips(st.to,'t')}</div>`
+      : `<label class="l">${st.type==='inc'?'وين دخلت':'من وين دفعت'}</label><div class="pick" id="fAcc">${accChips(st.account,'a')}</div>`
+        +(st.type==='exp'?`<label class="l">التصنيف ${sug?'<span class="muted">(مقترح، بتقدر تغيّره)</span>':'(اختياري)'}</label><div class="pick" id="fCat">${catChips(st.cat,sug)}</div>`:'');
+    $('#fAcc').onclick=ev=>{ const b=ev.target.closest('[data-a]'); if(b){ st.account=b.dataset.a; draw(); } };
+    const to=$('#fTo'); if(to) to.onclick=ev=>{ const b=ev.target.closest('[data-t]'); if(b){ st.to=b.dataset.t; draw(); } };
+    const fc=$('#fCat'); if(fc) fc.onclick=ev=>{ const b=ev.target.closest('[data-c]'); if(!b) return;
+      if(b.dataset.c==='__new') return newCategory(id=>{ st.cat=id; st.catTouched=true; draw(); });
+      st.cat=st.cat===b.dataset.c?'':b.dataset.c; st.catTouched=true; draw(); };
+  };
+  openSheet(`
+    <h3>${isNew?'تسجيل جديد':'تعديل'}</h3>
+    <div class="seg" id="fType"><button type="button" data-t="exp" class="${d.type==='exp'?'on':''}">مصروف</button><button type="button" data-t="inc" class="${d.type==='inc'?'on':''}">دخل</button><button type="button" data-t="trf" class="${d.type==='trf'?'on':''}">تحويل</button></div>
+    <input class="field big" id="fAmt" inputmode="decimal" value="${esc(d.amount)}" placeholder="0 ₪" autocomplete="off">
+    <label class="l">شو هو؟ (اكتب اللي بدك ياه)</label>
+    <input class="field" id="fDesc" list="dlDesc" value="${esc(d.desc)}" placeholder="مثلاً: فلافل، باص، كتاب…" autocomplete="off">
+    <div id="fTypeArea"></div>
+    <label class="l">التاريخ</label>
+    <input class="field" id="fDate" type="date" value="${esc(d.date)}">
+    <label class="l">ملاحظة (اختياري)</label>
+    <input class="field" id="fNote" value="${esc(d.note||'')}" autocomplete="off">
+    <div class="actions">${!isNew?'<button class="btn danger" id="fDel">حذف</button>':''}<button class="btn ghost" id="fCancel">إلغاء</button><button class="btn primary" id="fSave">حفظ</button></div>
+  `);
+  draw();
+  $('#fType').onclick=ev=>{ const b=ev.target.closest('button'); if(!b) return; st.type=b.dataset.t; $('#fType').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(isNew) st.account=(st.type==='inc'?rec.lastIncAcc||'bank':st.type==='trf'?'bank':rec.lastExpAcc||'cash'); draw(); };
+  let tm; $('#fDesc').oninput=()=>{ clearTimeout(tm); tm=setTimeout(draw,250); };
+  $('#fCancel').onclick=closeSheet;
+  $('#fSave').onclick=async()=>{
+    const amount=parseAmt($('#fAmt').value); if(!amount) { $('#fAmt').focus(); return toast('اكتب المبلغ'); }
+    if(st.type==='trf'&&st.account===st.to) return toast('اختار حسابين مختلفين');
+    const now=new Date().toISOString(), desc=$('#fDesc').value.trim();
+    const v={type:st.type,amount,account:st.account,to:st.type==='trf'?st.to:'',desc,cat:st.type==='exp'?st.cat:'',date:$('#fDate').value||today(),note:$('#fNote').value.trim(),updatedAt:now};
+    if(v.type==='exp'&&v.cat&&desc) learn(desc,v.cat);
+    if(isNew) S.d.entries.push({id:uid(),...v,createdAt:now,src:'manual'}); else Object.assign(S.d.entries.find(x=>x.id===e.id),v);
+    if(v.type==='exp') rec.lastExpAcc=v.account; if(v.type==='inc') rec.lastIncAcc=v.account;
+    await persist(); closeSheet(); UI.month=v.date.slice(0,7)>thisMonth()?thisMonth():v.date.slice(0,7); render(); toast(isNew?'انحفظ ✓':'تعدّل ✓');
+  };
+  if(!isNew) $('#fDel').onclick=()=>dialog({title:'تحذفه؟',text:`${label(e)} — ${moneyTxt(e.amount)}`,buttons:[{label:'لا'},{label:'احذف',cls:'danger',fn:async()=>{
+    const i=S.d.entries.findIndex(x=>x.id===e.id); const del=S.d.entries.splice(i,1)[0]; await persist(); closeSheet(); render();
+    toast('انحذف',{label:'تراجع',fn:async()=>{ S.d.entries.push(del); await persist(); render(); toast('رجع ✓'); }}); }}]});
+  if(isNew) setTimeout(()=>$('#fAmt').focus(),150);
+}
+
+/* ================= quick classify ================= */
+function classifyFlow(){
+  const list=exps(inMonth()).filter(e=>!cat(e.cat)).sort((a,b)=>b.amount-a.amount);
+  if(!list.length){ closeSheet(); render(); return toast('كل إشي مصنّف ✓'); }
+  const e=list[0]; const sug=suggestCat(e.desc);
+  openSheet(`<h3>صنّف (${list.length} ضايلين)</h3>
+    <div class="clsf"><div class="amt exp">${money(e.amount)}</div><div class="d">${esc(e.desc||'بدون وصف')}</div><div class="muted">${esc(acc(e.account).name)} • ${fmtDate(e.date)}${e.note?` • ${esc(e.note)}`:''}</div></div>
+    <div class="pick" id="cPick" style="margin-top:14px">${catChips('',sug)}</div>
+    <div class="actions"><button class="btn ghost" id="cSkip">بعدين</button><button class="btn ghost" id="cEdit">تعديل</button></div>`);
+  $('#cPick').onclick=async ev=>{ const b=ev.target.closest('[data-c]'); if(!b) return;
+    const apply=async id=>{ const k=norm(e.desc); let n=0; e.cat=id; e.updatedAt=new Date().toISOString(); if(e.desc){ learn(e.desc,id);
+        S.d.entries.forEach(x=>{ if(x!==e&&x.type==='exp'&&!cat(x.cat)&&k&&norm(x.desc)===k){ x.cat=id; x.updatedAt=e.updatedAt; n++; } }); }
+      await persist(); if(n) toast(`وصنّفت كمان ${n} زيه`); classifyFlow(); };
+    if(b.dataset.c==='__new') newCategory(apply); else apply(b.dataset.c); };
+  $('#cSkip').onclick=()=>{ closeSheet(); render(); };
+  $('#cEdit').onclick=()=>entrySheet(e);
+}
+
+/* ================= settings ================= */
+async function settingsSheet(){
+  const bioOk=await bioAvailable(); const last=rec.lastBackup?new Date(rec.lastBackup).toLocaleDateString('en-GB'):'ولا مرة';
+  openSheet(`
+    <h3>الإعدادات</h3>
+    <div class="set-sec">الحسابات وطرق الدفع</div>
+    ${S.d.accounts.map(a=>`<div class="set-item"><div>${a.icon} ${esc(a.name)}</div><button class="btn ghost" data-ren-acc="${a.id}">تغيير الاسم</button></div>`).join('')}
+    <div class="set-item"><div><small>مثلاً حساب بنك تاني أو بيت</small></div><button class="btn ghost" id="sAddAcc">+ حساب</button></div>
+    <div class="set-sec">التصنيفات</div>
+    <div class="pick" id="sCats">${S.d.cats.map(c=>`<button class="chip" data-c="${c.id}">${c.icon} ${esc(c.name)}</button>`).join('')}<button class="chip" data-c="__new">+ جديد</button></div>
+    <p class="muted" style="margin:6px 0 0">كبسة على تصنيف لتغيّر اسمه أو تحذفه.</p>
+    <div class="set-sec">الملفات</div>
+    <div class="set-item"><div>نسخة احتياطية مشفّرة<small>آخر نسخة: <span class="num">${last}</span></small></div><button class="btn acc" id="sBk">اعمل نسخة</button></div>
+    <div class="set-item"><div>استيراد ملف<small>نسخة احتياطية، أو ملف كشف الفيزا/البنك اللي بيجهّزلك ياه Claude</small></div><button class="btn ghost" id="sImp">استيراد</button></div>
+    <div class="set-item"><div>صدّر الشهر لـ Claude<small>ملف بتبعته بالشات للتحليل والتصنيف. مش مشفّر</small></div><button class="btn ghost" id="sCl">تصدير</button></div>
+    <div class="set-item"><div>تصدير Excel<small>جدول الشهر وملخص. مش مشفّر</small></div><button class="btn ghost" id="sXl">تصدير</button></div>
+    <div class="set-sec">القفل</div>
+    <div class="set-item"><div>البصمة<small>${!bioOk?(location.protocol==='file:'||!isSecureContext?'البصمة بتشتغل بس من رابط https':'مش مدعومة هون'):(rec.bio?'مفعّلة':'مش مفعّلة')}</small></div>${bioOk?`<button class="btn ${rec.bio?'ghost':'primary'}" id="sBio">${rec.bio?'إيقاف':'تفعيل'}</button>`:''}</div>
+    <div class="set-item"><div>تغيير كلمة السر</div><button class="btn ghost" id="sPw">تغيير</button></div>
+    <div class="set-item"><div>قفل تلقائي</div><select class="field" id="sAuto" style="width:auto;margin:0"><option value="0">فوراً</option><option value="60">بعد دقيقة</option><option value="300">بعد 5 دقائق</option></select></div>
+    <div class="actions"><button class="btn ghost" id="sClose">سكّر</button></div>`);
+  $('#sAuto').value=String(rec.autoLock??60);
+  $('#sAuto').onchange=async ev=>{ rec.autoLock=+ev.target.value; await writeRecord(rec); toast('انحفظ ✓'); };
+  $('#sClose').onclick=closeSheet; $('#sBk').onclick=backupSheet; $('#sImp').onclick=()=>$('#fileIn').click();
+  $('#sCl').onclick=exportForClaude; $('#sXl').onclick=exportExcel; $('#sPw').onclick=changePw;
+  document.querySelectorAll('[data-ren-acc]').forEach(b=>b.onclick=()=>{ const a=acc(b.dataset.renAcc);
+    dialog({title:'اسم الحساب',input:{value:a.name},buttons:[{label:'إلغاء'},{label:'حفظ',cls:'primary',fn:async v=>{ v=(v||'').trim(); if(!v) return; a.name=v; await persist(); settingsSheet(); render(); }}]}); });
+  $('#sAddAcc').onclick=()=>dialog({title:'حساب جديد',input:{placeholder:'مثلاً: بيت، بنك تاني'},buttons:[{label:'إلغاء'},{label:'زيد',cls:'primary',fn:async v=>{ v=(v||'').trim(); if(!v) return; S.d.accounts.push({id:uid(),name:v,icon:'👛'}); await persist(); settingsSheet(); }}]});
+  $('#sCats').onclick=ev=>{ const b=ev.target.closest('[data-c]'); if(!b) return;
+    if(b.dataset.c==='__new') return newCategory(()=>settingsSheet());
+    const c=cat(b.dataset.c);
+    dialog({title:`${c.icon} ${c.name}`,input:{value:c.name},buttons:[{label:'إلغاء'},{label:'احذف',cls:'danger',fn:async()=>{
+        const n=S.d.entries.filter(e=>e.cat===c.id).length;
+        dialog({title:'تحذف التصنيف؟',text:n?`في ${n} مصروف عليه، رح يصيروا بدون تصنيف.`:'',buttons:[{label:'لا'},{label:'احذف',cls:'danger',fn:async()=>{
+          S.d.entries.forEach(e=>{ if(e.cat===c.id) e.cat=''; }); for(const k in S.d.rules) if(S.d.rules[k]===c.id) delete S.d.rules[k];
+          S.d.cats=S.d.cats.filter(x=>x!==c); await persist(); settingsSheet(); render(); }}]}); }},
+      {label:'حفظ',cls:'primary',fn:async v=>{ v=(v||'').trim(); if(!v) return; c.name=v; await persist(); settingsSheet(); render(); }}]});
+  };
+  const sb=$('#sBio'); if(sb) sb.onclick=async()=>{ try{ if(rec.bio){ await bioDisable(); toast('توقّفت البصمة'); } else { await bioEnable(); toast('تفعّلت البصمة ✓'); } }catch(e){ toast('ما زبطت'); } settingsSheet(); };
+}
+function changePw(){
+  dialog({title:'كلمة السر الحالية',input:{type:'password'},buttons:[{label:'إلغاء'},{label:'التالي',cls:'primary',fn:async cur=>{
+    try{ await aesDec(await pwKey(cur||'',unb64(rec.kdf.salt),rec.kdf.iter),rec.wrapPw); }catch(e){ return toast('كلمة السر غلط'); }
+    dialog({title:'كلمة السر الجديدة',input:{type:'password',placeholder:'4 أحرف أو أكثر'},buttons:[{label:'إلغاء'},{label:'التالي',cls:'primary',fn:async a=>{
+      if(!a||a.length<4) return toast('قصيرة كتير');
+      dialog({title:'اكتبها مرة تانية',input:{type:'password'},buttons:[{label:'إلغاء'},{label:'غيّر',cls:'primary',fn:async b=>{
+        if(a!==b) return toast('الكلمتين مش زي بعض'); const salt=rand(16),iter=250000;
+        rec.kdf={salt:b64(salt),iter}; rec.wrapPw=await aesEnc(await pwKey(a,salt,iter),S.raw); await writeRecord(rec); toast('تغيّرت ✓ اعمل نسخة احتياطية جديدة'); }}]}); }}]}); }}]});
+}
+
+/* ================= files ================= */
+async function deliver(blob,filename,share){
+  const file=new File([blob],filename,{type:blob.type||'application/octet-stream'});
+  if(share){ if(navigator.canShare&&navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file],title:filename}); return true; }catch(e){ if(e.name==='AbortError') return false; } } else toast('المشاركة مش مدعومة هون، رح أنزّله'); }
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000); return true;
+}
+function backupSheet(){
+  openSheet(`<h3>نسخة احتياطية</h3><p class="muted" style="margin:0 0 12px;font-size:14px">الملف مشفّر بكلمة السر تبعتك. احفظه برّا التلفون (Drive أو الإيميل) عشان إذا ضاع التلفون أو انمسح المتصفح بترجّع كل إشي.</p>
+    <div class="actions" style="flex-direction:column"><button class="btn acc block" id="bShare">شارك الملف</button><button class="btn ghost block" id="bDl">نزّله على التلفون</button></div>`);
+  const go=async share=>{ const p={format:'masarif-backup-v1',exportedAt:new Date().toISOString(),count:S.d.entries.length,kdf:rec.kdf,wrapPw:rec.wrapPw,data:rec.data};
+    if(await deliver(new Blob([JSON.stringify(p)],{type:'application/json'}),`masarif-backup-${today()}.json`,share)){ rec.lastBackup=Date.now(); rec.changes=0; await writeRecord(rec); closeSheet(); render(); toast('تمام ✓'); } };
+  $('#bShare').onclick=()=>go(true); $('#bDl').onclick=()=>go(false);
+}
+function exportForClaude(){
+  const ms=inMonth();
+  const p={format:'masarif-month-v1',month:UI.month,accounts:S.d.accounts.map(({id,name})=>({id,name})),cats:S.d.cats.map(({id,name})=>({id,name})),
+    entries:ms.map(({id,type,amount,account,to,desc,cat,date,note})=>({id,type,amount,account,to,desc,cat,date,note}))};
+  dialog({title:`تصدير ${monthLabel(UI.month)}`,text:`${ms.length} تسجيلة. ابعت الملف بالشات لـ Claude مع كشف الفيزا والبنك، وبيرجّعلك ملف مصنّف بتستورده هون.\nالملف مش مشفّر، امسحه بعد ما تبعته.`,
+    buttons:[{label:'إلغاء'},{label:'نزّله',fn:()=>deliver(new Blob([JSON.stringify(p,null,1)],{type:'application/json'}),`masarif-${UI.month}.json`,false)},{label:'شاركه',cls:'primary',fn:()=>deliver(new Blob([JSON.stringify(p,null,1)],{type:'application/json'}),`masarif-${UI.month}.json`,true)}]});
+}
+$('#fileIn').onchange=async ev=>{ const f=ev.target.files[0]; ev.target.value=''; if(!f) return;
+  let j; try{ j=JSON.parse(await f.text()); }catch(e){ return toast('الملف مش مفهوم'); }
+  if(j.format==='masarif-backup-v1') return importBackup(j);
+  if(j.format==='masarif-import-v1'||j.format==='masarif-month-v1') return importPlain(j);
+  toast('هاد مش ملف مصاريف'); };
+function mergeMeta(j){
+  (j.accounts||[]).forEach(a=>{ if(a.id&&!S.d.accounts.some(x=>x.id===a.id)) S.d.accounts.push({id:a.id,name:a.name||a.id,icon:a.icon||(String(a.id).startsWith('visa')?'💳':'👛')}); });
+  (j.cats||[]).forEach(c=>{ if(c.id&&!cat(c.id)) S.d.cats.push({id:c.id,name:c.name||c.id,icon:c.icon||'🏷️',color:c.color||PALETTE[S.d.cats.length%PALETTE.length]}); });
+}
+function importPlain(j){
+  const list=(j.entries||[]).filter(e=>e&&e.id&&+e.amount); const byId=new Map(S.d.entries.map(e=>[e.id,e]));
+  const fresh=list.filter(e=>!byId.has(e.id)), upd=list.filter(e=>byId.has(e.id));
+  if(!fresh.length&&!upd.length) return toast('ما في إشي جديد بالملف');
+  dialog({title:'استيراد',text:`${fresh.length} تسجيلة جديدة (مصاريف ${moneyTxt(sum(exps(fresh)))})${upd.length?`\nو ${upd.length} موجودين رح يتحدّثوا (مثلاً تصنيفهم)`:''}.`,buttons:[{label:'إلغاء'},{label:'استورد',cls:'primary',fn:async()=>{
+    mergeMeta(j); const now=new Date().toISOString();
+    const clean=e=>({id:e.id,type:['exp','inc','trf'].includes(e.type)?e.type:'exp',amount:parseAmt(e.amount),account:e.account||'cash',to:e.to||'',desc:e.desc||'',cat:e.cat||'',date:e.date||today(),note:e.note||'',src:e.src||'import',createdAt:e.createdAt||now,updatedAt:now});
+    fresh.forEach(e=>S.d.entries.push(clean(e)));
+    upd.forEach(e=>{ const t=byId.get(e.id); const c=clean(e); Object.assign(t,{type:c.type,amount:c.amount,account:c.account,to:c.to,desc:c.desc,cat:c.cat,date:c.date,note:c.note,updatedAt:now}); });
+    list.forEach(e=>{ if(e.type==='exp'&&e.cat&&e.desc) learn(e.desc,e.cat); });
+    await persist(); closeSheet(); if(list[0]?.date) UI.month=list[0].date.slice(0,7); render(); toast('تم ✓'); }}]});
+}
+function importBackup(j){
+  dialog({title:'كلمة سر النسخة',text:`نسخة فيها ${j.count??'?'} تسجيلة.`,input:{type:'password'},buttons:[{label:'إلغاء'},{label:'افتح',cls:'primary',fn:async pw=>{
+    let d; try{ const raw=await aesDec(await pwKey(pw||'',unb64(j.kdf.salt),j.kdf.iter),j.wrapPw); d=JSON.parse(dec.decode(await aesDec(await dataKey(raw),j.data))); }catch(e){ return toast('كلمة السر غلط أو الملف خربان'); }
+    const byId=new Map(S.d.entries.map(e=>[e.id,e])); const fresh=d.entries.filter(e=>!byId.has(e.id));
+    dialog({title:'شو أعمل؟',text:`بالنسخة ${d.entries.length} تسجيلة.\nدمج: بيضيف ${fresh.length} جديدة.\nاستبدال: بيمسح اللي هلق (${S.d.entries.length}) وبحط اللي بالنسخة.`,buttons:[{label:'إلغاء'},
+      {label:'استبدال',cls:'danger',fn:async()=>{ S.d=d; const b=blankData(); for(const k of Object.keys(b)) if(!S.d[k]) S.d[k]=b[k]; await persist(); closeSheet(); render(); toast('ترجّعت ✓'); }},
+      {label:'دمج',cls:'primary',fn:async()=>{ mergeMeta(d); fresh.forEach(e=>S.d.entries.push(e)); Object.assign(S.d.rules,d.rules||{}); await persist(); closeSheet(); render(); toast('اندمجت ✓'); }}]}); }}]});
+}
+
+/* ================= Excel ================= */
+const CRC=(()=>{ const t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; t[n]=c>>>0; } return t; })();
+const crc32=b=>{ let c=0xFFFFFFFF; for(let i=0;i<b.length;i++) c=CRC[(c^b[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
+function zip(files){ const parts=[],central=[]; let off=0;
+  for(const [name,str] of files){ const nm=enc.encode(name),data=enc.encode(str),crc=crc32(data); const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,nm.length,true);
+    parts.push(new Uint8Array(h.buffer),nm,data); const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+    central.push(new Uint8Array(c.buffer),nm); off+=30+nm.length+data.length; }
+  const cs=central.reduce((s,a)=>s+a.length,0); const e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+  return new Blob([...parts,...central,new Uint8Array(e.buffer)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}); }
+const xe=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'');
+function sheet(head,rows,widths,totalCol){
+  const L='ABCDEFGHIJ';
+  const cell=(c,r,v,s)=>typeof v==='number'?`<c r="${c}${r}"${s?` s="${s}"`:''}><v>${v}</v></c>`:`<c r="${c}${r}" t="inlineStr"${s?` s="${s}"`:''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`;
+  let x=`<row r="1">${head.map((h,i)=>cell(L[i],1,h,1)).join('')}</row>`;
+  rows.forEach((row,i)=>{ x+=`<row r="${i+2}">${row.map((v,k)=>cell(L[k],i+2,v,typeof v==='number'?3:0)).join('')}</row>`; });
+  if(totalCol!=null){ const tr=rows.length+2, C=L[totalCol]; x+=`<row r="${tr}">${cell(L[totalCol-1]||'A',tr,'المجموع',2)}<c r="${C}${tr}" s="2"><f>SUM(${C}2:${C}${Math.max(tr-1,2)})</f></c></row>`; }
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView rightToLeft="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')}</cols><sheetData>${x}</sheetData></worksheet>`;
+}
+function exportExcel(){
+  const ms=inMonth().sort((a,b)=>a.date.localeCompare(b.date)); const T={exp:'مصروف',inc:'دخل',trf:'تحويل'};
+  const s1=sheet(['التاريخ','النوع','المبلغ (₪)','الحساب','الوصف','التصنيف','ملاحظة'],
+    ms.map(e=>[fmtDate(e.date),T[e.type],e.type==='exp'?-e.amount:+e.amount,e.type==='trf'?`${acc(e.account).name} ← ${acc(e.to).name}`:acc(e.account).name,e.desc||'',e.type==='exp'?(cat(e.cat)?.name||'بدون تصنيف'):'',e.note||'']),[12,10,12,16,28,14,24],null);
+  const ex=exps(ms), tE=sum(ex), byCat={}; ex.forEach(e=>{ const n=cat(e.cat)?.name||'بدون تصنيف'; byCat[n]=(byCat[n]||0)+e.amount; });
+  const s2=sheet(['التصنيف','المبلغ (₪)','النسبة %'],Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([n,v])=>[n,Math.round(v*100)/100,tE?Math.round(v/tE*1000)/10:0]),[20,14,10],1);
+  const NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main',RNS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const names=['السجل','ملخص المصاريف'];
+  const files=[
+    ['[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`],
+    ['_rels/.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${RNS}/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ['xl/workbook.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${NS}" xmlns:r="${RNS}"><bookViews><workbookView/></bookViews><sheets>${names.map((n,i)=>`<sheet name="${xe(n)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`],
+    ['xl/_rels/workbook.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${RNS}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${RNS}/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="${RNS}/styles" Target="styles.xml"/></Relationships>`],
+    ['xl/styles.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${NS}"><fonts count="2"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDCE6F2"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="4" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyNumberFormat="1"/><xf numFmtId="4" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`],
+    ['xl/worksheets/sheet1.xml',s1],['xl/worksheets/sheet2.xml',s2]];
+  dialog({title:'تصدير Excel',text:`${monthLabel(UI.month)}. الملف مش مشفّر، انتبه وين بتحفظه.`,buttons:[{label:'إلغاء'},{label:'نزّله',fn:()=>deliver(zip(files),`masarif-${UI.month}.xlsx`,false)},{label:'شاركه',cls:'primary',fn:()=>deliver(zip(files),`masarif-${UI.month}.xlsx`,true)}]});
+}
+
+/* ================= boot ================= */
+(async()=>{ rec=await loadRecord(); showLock(); if('serviceWorker' in navigator&&location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{}); })();
+</script>
+</body>
+</html>
